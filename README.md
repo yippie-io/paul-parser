@@ -14,3 +14,5 @@ The code is a bit messy, but it works quite allright. Feel free to fork it and m
 ## Contribute
 Fork our repository, change, test and then make a pull-request. 
 
+## License
+This is GPL v3 software.
