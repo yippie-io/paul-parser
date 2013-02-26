@@ -5,11 +5,11 @@ The code is a bit messy, but it works quite allright. Feel free to fork it and m
 ## Setup
 - Install Ruby 1.9
 - Install Mongodb `brew install mongodb`
-- Start `mongodb` under localhost
+- Start `mongodb` under _localhost_
 - Download all courses of the current semester into mongodb `ruby crawler.rb`
-- In your mongodb, you will find a collection named `raw_pages` in the database `paul`
+- In your mongodb, you will find a collection named _raw_pages_ in the database _paul_
 - Analyse all courses with `ruby parser.rb`
-- Open the collection named `courses` and do what ever you like with the information
+- Open the collection named _courses_ and do what ever you like with the information
 
 ## Contribute
 Fork our repository, change, test and then make a pull-request. 
