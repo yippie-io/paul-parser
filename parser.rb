@@ -3,21 +3,24 @@ require 'nokogiri'
 require 'pp'
 require 'mongo'
 
-
+Mongoid.load!("mongoid.yml", :development)
 
 class Course 
   include Mongoid::Document
   field :title, type: String
-  field :title_downcase, type: String, index: true
+  field :title_downcase, type: String
   field :paul_id, type: String
   field :internal_course_id, type: String
   field :course_data, type: Array
   field :course_type, type: String
   field :paul_url, type: String
   field :group_title, type: String
-  field :meta_lecturer_names, type: String, index: true
-  field :meta_rooms, type: String , index: true
-  key :internal_course_id
+  field :meta_lecturer_names, type: String
+  field :meta_rooms, type: String
+  field :_id, type: String, default: ->{ internal_course_id }
+  index({title_downcase: 1})
+  index({meta_lecturer_names: 1})
+  index({meta_rooms: 1})
 end
 
 def clear(value)
@@ -161,10 +164,6 @@ end
   
 
 db = Mongo::Connection.new.db("paul")
-
-Mongoid.configure do |config|
-  config.master = db
-end
 
 collection = db['raw_pages']
 collection.find.each do |page| 
