@@ -6,6 +6,7 @@ The code is a bit messy, but it works quite allright. Feel free to fork it and m
 - Install Ruby 1.9
 - Install Mongodb `brew install mongodb`
 - Start `mongodb` under _localhost_
+- Install dependencies with `bundle install`
 - Download all courses of the current semester into mongodb with `ruby crawler.rb`
 - In your mongodb, you will find a collection named _raw_pages_ in the database _paul_
 - Analyse all courses with `ruby parser.rb`
