@@ -144,20 +144,24 @@ def parse(body, url)
       end
     end 
     pp title
-    Course.create(
-    title: title,
-    title_downcase: kleingruppe ? kleingruppe_title.downcase : title.downcase,
-    course_data: course_data,
-    paul_id: course_id,
-    internal_course_id: internal_course_id,
-    course_short_desc: course_short_desc,
-    course_short_desc_downcase: course_short_desc.downcase,
-    paul_url: url,
-    course_type: kleingruppe ? 'group' : 'course',
-    group_title: kleingruppe_title,
-    meta_lecturer_names: instructors.join(",").downcase,
-    meta_rooms: rooms.join(",").downcase
-    )
+    begin
+      Course.create!(
+      title: title,
+      title_downcase: kleingruppe ? kleingruppe_title.downcase : title.downcase,
+      course_data: course_data,
+      paul_id: course_id,
+      internal_course_id: internal_course_id,
+      course_short_desc: course_short_desc,
+      course_short_desc_downcase: course_short_desc.downcase,
+      paul_url: url,
+      course_type: kleingruppe ? 'group' : 'course',
+      group_title: kleingruppe_title,
+      meta_lecturer_names: instructors.join(",").downcase,
+      meta_rooms: rooms.join(",").downcase
+      )
+    rescue
+      puts "!!! FAILed to create document: #{title} (#{url})"
+    end
 
   end
 end
@@ -171,3 +175,5 @@ collection.find.each do |page|
   body = bin_body.unpack("C*").pack("C*").force_encoding('ISO-8859-1')
   parse body, page['url']
 end
+
+puts "Course documents: #{Course.count}"
