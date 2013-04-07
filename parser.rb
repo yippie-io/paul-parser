@@ -84,14 +84,16 @@ def parse(body, url)
     if kleingruppe
       kleingruppe_title = clear(doc.css('form[name=courseform] h2').first.inner_html.strip)
       kleingruppe_title = kleingruppe_title.split(':').last.strip.gsub(Nokogiri::HTML("&nbsp;").text, '')
-      puts kleingruppe_title
+      #puts kleingruppe_title
     else
       kleingruppe_title = ''
     end
 
     course_short_desc = doc.css('input[name=shortdescription]').first['value']
 
-    puts course_short_desc
+    # supress names like K.072.21003
+    course_short_desc = "" if course_short_desc.length > 0 && course_short_desc =~ /\AK.\d.*/i
+    
     course_data = []
     instructors = []
     rooms = []
@@ -143,7 +145,7 @@ def parse(body, url)
         }
       end
     end 
-    pp title
+    #pp title.strip
     begin
       Course.create!(
       title: title,
@@ -170,9 +172,13 @@ end
 db = Mongo::Connection.new.db("paul")
 
 collection = db['raw_pages']
+
+counter = 0
 collection.find.each do |page| 
   bin_body = page['body']
   body = bin_body.unpack("C*").pack("C*").force_encoding('ISO-8859-1')
+  counter += 1
+  puts "[#{counter}/#{collection.count}] (#{counter*100/collection.count}%)" if (counter % 200) === 0
   parse body, page['url']
 end
 
