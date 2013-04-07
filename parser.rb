@@ -2,6 +2,7 @@ require 'mongoid'
 require 'nokogiri'
 require 'pp'
 require 'mongo'
+require 'forkoff'
 
 Mongoid.load!("mongoid.yml", :development)
 
@@ -143,7 +144,7 @@ def parse(body, url)
         }
       end
     end 
-    pp title
+    # pp title
     begin
       Course.create!(
       title: title,
@@ -170,9 +171,12 @@ end
 db = Mongo::Connection.new.db("paul")
 
 collection = db['raw_pages']
-collection.find.each do |page| 
+counter = []
+collection.find.forkoff! do |page| 
   bin_body = page['body']
   body = bin_body.unpack("C*").pack("C*").force_encoding('ISO-8859-1')
+  counter.push 1
+  puts "[#{counter.count}/#{collection.count}]" if counter.count % 100 == 0
   parse body, page['url']
 end
 

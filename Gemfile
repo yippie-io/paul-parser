@@ -5,3 +5,4 @@ gem "nokogiri"
 gem "bson_ext" # faster mongo
 gem "mongo"
 gem "mongoid"
+gem "forkoff"
