@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #This script will crawl all available course catalogues (past and present) of the university of paderborn
 #and store it into a mongdo db collection
 

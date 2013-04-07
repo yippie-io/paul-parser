@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'mongoid'
 require 'nokogiri'
 require 'pp'
