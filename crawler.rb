@@ -9,7 +9,7 @@ require 'pp'
 require 'mongo'
 db_name = "paul"
 collection_name = "raw_pages"
-paul_url = "https://paul.uni-paderborn.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-AyP5sV..793o4s3aWkxMr3CgQLafijVhQ4t4KjJdpg58k0zK7lh.RgSzecVbNfvSm19sXF.NMaqfWnCotC4iISjpXAkajKCE49cDA0aJ9tj2qz0JocBso1q.yq.bHAp5e6pf6dDyAmJsf0VUH"
+paul_url = "https://paul.uni-paderborn.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-Aw5KEVlEq9AI9PUtudv8Dp9SiLoyreputWWrynNtpZf1GG6Zio5FxXkSisE7Y7RUb-SG2lj0gpXUy8U-poDO6TfXh7PGPBiFDGXiJ7-G-9dthW98oX4g.70shKzN="
 
 #
 # This defines when a link should not be followed
@@ -19,6 +19,7 @@ def delete_link?(link)
     "PRGNAME=EXTERNALPAGES",
     "PRGNAME=CHANGELANGUAGE",
     "A9pGAVlhQw48lvvGg7gsekxlk5KDm2nYnO2JO3.25h069-2tXnZav-G-zUZzr", #veranstaltungssuche,
+    "-AywyHPFbM6mYuDoLDB5D02MUKWtFic1sKUh1n3x8V8TvCZA2i9oifScLNeSqjlgLBsj9E8DT6zHbdc0JGTNy9rpDK-I7ucgf6RYZWMWygG4FqqBbVJ7EKu6.g1BV=", #13
     "A9d9HHlEq9mfNWmQzWF-r6P.EmjA9YW8m2IhFxFEyN-9IMkwYVh5cvRQ.M7vAjQFjPr4juhwmXmE3RbXmq6dpYep4w3NDIJOY8A6nUmzKxbPg", #12/13
     "A6qDVVrta9mzOaQzXsFVSthQCqALEl.oZOP90wcXMyqGca-t.TMge9dD5MT2Gw-pQImykoBdF-gookElHzR3THeBLK", #12
     "-A6p9LPegWwsO-JKSW7jEKieMQNxXICKplf5ClWnJZKPhMTiSHnvvxBtDkqFjw7kd4mGVHve2..QnzXXpzs69P4fJLMvj1mwhvpsV7P8emyt25e0M8cA", #11/12
@@ -33,11 +34,15 @@ def delete_link?(link)
 end
 connection = Mongo::Connection.new
 db = connection.db(db_name)
+pages = 0
 Anemone.crawl(paul_url) do |anemone|
   anemone.focus_crawl do |page|
+    pages += 1
     page.links.delete_if do |link|
       delete_link? link.to_s
     end 
   end
   anemone.storage = Anemone::Storage.MongoDB(db, collection_name)
 end
+
+puts "Crawled #{pages.to_s} html pages... DONE"
