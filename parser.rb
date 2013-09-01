@@ -19,6 +19,8 @@ class Course
   field :group_title, type: String
   field :meta_lecturer_names, type: String
   field :meta_rooms, type: String
+  field :sws, type: Integer
+  field :description, type: String
   field :_id, type: String, default: ->{ internal_course_id }
   index({title_downcase: 1})
   index({meta_lecturer_names: 1})
@@ -50,8 +52,8 @@ def parse(body, url)
     'Dez' => '12'
   }
   
-  date_check = 'Apr. 2013'
-  semester_check = '#pageTopNavi ul.nav.depth_2 #link000564 a.link000564 span{'
+  date_check = 'Okt. 2013'
+  semester_check = '#pageTopNavi ul.nav.depth_2 #link000574 a.link000574 span{'
   
   if body and body.include? "Veranstaltungsdetails" and (body.include? date_check or body.include? semester_check)
     doc = Nokogiri::HTML(body)
@@ -95,6 +97,18 @@ def parse(body, url)
 
     # supress names like K.072.21003
     course_short_desc = "" if course_short_desc.length > 0 && course_short_desc =~ /\AK.\d.*/i
+    
+    # get SWS (Semesterwochenstunden)
+    begin
+      sws = doc.css('input[name=sws]').first['value']
+    end
+    
+    # get "Inhalt" / Description
+    description = nil
+    begin
+      description_node = doc.css('td.tbdata p').last
+      description = description_node.inner_html if description_node.inner_html.include?("Inhalt")
+    end
     
     course_data = []
     instructors = []
@@ -161,7 +175,9 @@ def parse(body, url)
       course_type: kleingruppe ? 'group' : 'course',
       group_title: kleingruppe_title,
       meta_lecturer_names: instructors.join(",").downcase,
-      meta_rooms: rooms.join(",").downcase
+      meta_rooms: rooms.join(",").downcase,
+      sws: sws.to_i,
+      description: description
       )
     rescue
       puts "!!! FAILed to create document: #{title} (#{url})"
