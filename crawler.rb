@@ -2,6 +2,9 @@
 
 #This script will crawl all available course catalogues (past and present) of the university of paderborn
 #and store it into a mongdo db collection
+#for each NEW SEMESTER: change the paul_url (L 13) to the semester link at "Vorlesungsverzeichnis",
+#also include the last semester in the checks array, L 20).
+#don't forget to change the conditions (a month/year pair and a css rule) in the parser.rb!
 
 require 'anemone'
 require 'open-uri'  
@@ -32,12 +35,36 @@ def delete_link?(link)
     ]
   checks.any? {|e| link.include? e} 
 end
+
+# Mongo setup, those 6000 HTML files may not fit in your memory...
 connection = Mongo::Connection.new
 db = connection.db(db_name)
-pages = 0
+
+# for status updates
+$pages = 0
+$start_time = Time.now
+
+def time_diff(unit = :seconds)
+  dif = Time.now - $start_time
+  if unit == :seconds
+    dif
+  elsif unit == :minutes
+    (dif/60).round(1)
+  end
+end
+
+def new_page_event(interval = 500)
+  $pages += 1
+  if $pages > 0 && $pages % interval == 0
+    puts "avg. speed: #{($pages/time_diff).round(1)} pages/sec - (downloaded: #{$pages} pages, elapsed: #{time_diff(:minutes)} min)"
+  end
+end
+
+
+# main entry point
 Anemone.crawl(paul_url) do |anemone|
   anemone.focus_crawl do |page|
-    pages += 1
+    new_page_event
     page.links.delete_if do |link|
       delete_link? link.to_s
     end 
@@ -45,4 +72,5 @@ Anemone.crawl(paul_url) do |anemone|
   anemone.storage = Anemone::Storage.MongoDB(db, collection_name)
 end
 
-puts "Crawled #{pages.to_s} html pages... DONE"
+# finished, print out some stats.
+puts "Crawled #{$pages.to_s} html pages in #{time_diff(:minutes)} min... DONE"
