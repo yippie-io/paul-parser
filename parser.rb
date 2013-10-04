@@ -107,7 +107,7 @@ def parse(body, url)
     description = nil
     begin
       description_node = doc.css('td.tbdata p').last
-      description = description_node.inner_html if description_node.inner_html.include?("Inhalt")
+      description = description_node.inner_html if description_node.inner_html.include?("Inhalt") || description_node.inner_html.include?("Kommentartext")
     end
     
     course_data = []
