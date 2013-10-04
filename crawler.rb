@@ -41,6 +41,7 @@ connection = Mongo::Connection.new
 db = connection.db(db_name)
 
 # for status updates
+$estimate = 6000
 $pages = 0
 $start_time = Time.now
 
@@ -55,8 +56,9 @@ end
 
 def new_page_event(interval = 500)
   $pages += 1
-  if $pages > 0 && $pages % interval == 0
-    puts "avg. speed: #{($pages/time_diff).round(1)} pages/sec - (downloaded: #{$pages} pages, elapsed: #{time_diff(:minutes)} min)"
+  if $pages % interval == 0
+    eta = [0, ($estimate - $pages) / ($pages/time_diff) / 60].max
+    puts "avg. speed: #{($pages/time_diff).round(1)} pages/sec - downloaded: #{$pages} pages - elapsed: #{time_diff(:minutes)} min - ETA: #{eta.round(1)} min"
   end
 end
 
