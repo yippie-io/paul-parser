@@ -54,9 +54,9 @@ def time_diff(unit = :seconds)
   end
 end
 
-def new_page_event(interval = 500)
+def new_page_event(interval = 500, first_after = 100)
   $pages += 1
-  if $pages % interval == 0
+  if $pages % interval == 0 || $pages == first_after
     eta = [0, ($estimate - $pages) / ($pages/time_diff) / 60].max
     puts "avg. speed: #{($pages/time_diff).round(1)} pages/sec - downloaded: #{$pages} pages - elapsed: #{time_diff(:minutes)} min - ETA: #{eta.round(1)} min"
   end

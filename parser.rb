@@ -107,7 +107,7 @@ def parse(body, url)
     description = nil
     begin
       description_node = doc.css('td.tbdata p').last
-      description = description_node.inner_html if description_node.inner_html.include?("Inhalt") || description_node.inner_html.include?("Kommentartext")
+      description = description_node.inner_html if description_node.inner_html.match(/inhalt/i) || description_node.inner_html.match(/kommentartext/i)
     end
     
     course_data = []
@@ -191,13 +191,20 @@ db = Mongo::Connection.new.db("paul")
 
 collection = db['raw_pages']
 
+Course.delete_all
+
 counter = 0
+skipped = 0
 collection.find.each do |page| 
-  bin_body = page['body']
-  body = bin_body.unpack("C*").pack("C*").force_encoding('ISO-8859-1')
   counter += 1
+  bin_body = page['body']
+  unless bin_body
+    skipped += 1
+  else
+    body = bin_body.unpack("C*").pack("C*").force_encoding('ISO-8859-1')
+    parse body, page['url']
+  end
   puts "[#{counter}/#{collection.count}] (#{counter*100/collection.count}%)" if (counter % 200) === 0
-  parse body, page['url']
 end
 
-puts "Course documents: #{Course.count}"
+puts "Course documents: #{Course.count}, skipped parsing of #{skipped} pages."
