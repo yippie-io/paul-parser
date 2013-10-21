@@ -41,7 +41,7 @@ connection = Mongo::Connection.new
 db = connection.db(db_name)
 
 # for status updates
-$estimate = 6000
+$estimate = 6150
 $pages = 0
 $start_time = Time.now
 

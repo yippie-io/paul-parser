@@ -22,12 +22,14 @@ class Course
   index({meta_rooms: 1})
 end
 
-#bwl a ws2013
-
-[350243511369765, 350243511278761, 350243511280757].each do |c|
+[350243511369765, 350243511278761, 350243511280757, 350243511254749, 350243511295753].each do |c|
   course = Course.find(c.to_s)
   puts course.title
 end
+
+exit unless ARGV.first
+
+#bwl a ws2013
 
 [350243511369765, 350243511278761, 350243511280757].each do |c|
   course = Course.find(c.to_s)
