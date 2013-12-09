@@ -37,7 +37,7 @@ def my_update!
 
   puts "now updating the other #{user_count - 5} users\nnote: first number in status lines can be used to resume via skip_c.\nnow GO!"
   User.desc(:created_at).skip(5+skip_c).each_with_index do |user, i|
-    puts "#{i+5+skip_c} - #{(100*(i+5+skip_c).to_f/user_count).round(1)}%" if i % 20 == 0
+    puts "#{i+5+skip_c} - #{((100*i+5+skip_c).to_f/user_count).round(1)}%" if i % 20 == 0
     user.update_non_custom_courses!
   end
 end
