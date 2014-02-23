@@ -2,8 +2,8 @@
 
 #This script will crawl all available course catalogues (past and present) of the university of paderborn
 #and store it into a mongdo db collection
-#for each NEW SEMESTER: change the paul_url (L 13) to the semester link at "Vorlesungsverzeichnis",
-#also include the last semester in the checks array, L 20).
+#for each NEW SEMESTER: change the paul_url (L 15) to the semester link at "Vorlesungsverzeichnis",
+#also include the last semester in the checks array, L 21).
 #don't forget to change the conditions (a month/year pair and a css rule) in the parser.rb!
 
 require 'anemone'
@@ -12,7 +12,7 @@ require 'pp'
 require 'mongo'
 db_name = "paul"
 collection_name = "raw_pages"
-paul_url = "https://paul.uni-paderborn.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-AyICXs5BFMOuEGBBQIaX4907mTyTliGVJScN1vUhbYU83tJRnW7ER4ostO-Wynes9yWldZvZeqwtKXIxs4mInpw0Fz9fEWP3QWsanhy7jdoSYtRniIyB26Jrjbef="
+paul_url = "https://paul.uni-paderborn.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-AwIJy.5cjqOY2gi9Q1BtDkQsYACWrxkYFdZXrAETSD.hA0H4omdGG17dQG67DAJvRYF37YXzQvLd1MAVrtiWF.eQA4Vnl8Tqcmx1SK8cGVYwU4O0y74sEzlk-WGe="
 
 #
 # This defines when a link should not be followed
@@ -22,6 +22,8 @@ def delete_link?(link)
     "PRGNAME=EXTERNALPAGES",
     "PRGNAME=CHANGELANGUAGE",
     "-A6grKs5PHq2rFF2cazDrKQT4oecxio0CjK9Y7W9Jd3DdiHke0Qf8QZdI4tyCkNAXXLn5WwUf1J-8nbwl3GO3wniMX-TGs97==", #veranstaltungssuche,
+ 
+"-AyICXs5BFMOuEGBBQIaX4907mTyTliGVJScN1vUhbYU83tJRnW7ER4ostO-Wynes9yWldZvZeqwtKXIxs4mInpw0Fz9fEWP3QWsanhy7jdoSYtRniIyB26Jrjbef", #13/14 
     "-AywyHPFbM6mYuDoLDB5D02MUKWtFic1sKUh1n3x8V8TvCZA2i9oifScLNeSqjlgLBsj9E8DT6zHbdc0JGTNy9rpDK-I7ucgf6RYZWMWygG4FqqBbVJ7EKu6.g1BV=", "AwQ3RgPcAE1ilWQyqTYVi.pw2IS5PTRZryEtxYuNdfaS9c4-gjZTAjLJ7see7ppiNp8kbrAVC18pvNvOuFatCHfhAi-svOVHmvIfV3mweid-9V0n7NVks13ilfXa", #13
     "A9d9HHlEq9mfNWmQzWF-r6P.EmjA9YW8m2IhFxFEyN-9IMkwYVh5cvRQ.M7vAjQFjPr4juhwmXmE3RbXmq6dpYep4w3NDIJOY8A6nUmzKxbPg", "-A6fvR.5BFM1kfBjzhqHtD2xDA4OUg2DY6pPEe0iSJDg4LMztEmFN", #12/13
     "A6qDVVrta9mzOaQzXsFVSthQCqALEl.oZOP90wcXMyqGca-t.TMge9dD5MT2Gw-pQImykoBdF-gookElHzR3THeBLK", "-A9BzcsdVdM17TWofOpYpWsigNVcARx.mxa3x7zqFjowDxXynycu5uUvZB63yANbsov4PzNv9yIK9HbMl", #12
@@ -41,7 +43,7 @@ connection = Mongo::Connection.new
 db = connection.db(db_name)
 
 # for status updates
-$estimate = 6000
+$estimate = 5500
 $pages = 0
 $start_time = Time.now
 

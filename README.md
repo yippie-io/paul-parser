@@ -6,9 +6,9 @@ The code is a bit messy, but it works quite allright. Feel free to fork it and m
 If you are only interested in the course data, checkout our course API at [dev.yippie.io](http://dev.yippie.io/apis.courses.html)
 
 ## Setup
-- Install Ruby 1.9
-- Install Mongodb `brew install mongodb`
-- Start `mongodb` under _localhost_
+- Install Ruby 1.9+ (tested with 1.9 and 2.1)
+- Install MongoDB `brew install mongodb` (on linux, use the 10gen-packages, just google for it.)
+- Start `mongodb` at _localhost_
 - Install dependencies with `bundle install`
 - Download all courses of the current semester into mongodb with `bundle exec ruby crawler.rb`
 - In your mongodb, you will find a collection named _raw_pages_ in the database _paul_
@@ -17,7 +17,7 @@ If you are only interested in the course data, checkout our course API at [dev.y
 - to export the found data, simply run `mongoexport --db paul --collection courses > courses.json`
 
 ## Contribute
-Fork our repository, change, test and then make a pull-request. 
+Fork our repository, change, test and then make a pull-request. :-) Thanks!
 
 ## License
-This is GPL v3 software.
+This is GPL v3 software. (<http://www.gnu.org/licenses/gpl-3.0.txt> / German: <http://www.gnu.de/documents/gpl.de.html>)

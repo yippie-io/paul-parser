@@ -52,10 +52,10 @@ def parse(body, url)
     'Dez' => '12'
   }
   
-  date_check = 'Okt. 2013'
-  semester_check = '#pageTopNavi ul.nav.depth_2 #link000574 a.link000574 span{'
+  date_check = 'Apr. 2014'
+  semester_check = '#pageTopNavi ul.nav.depth_2 #link000578 a.link000578 span{' # grep detail page html for '#pageTopNavi ul.nav.depth_2'
   
-  if body and body.include? "Veranstaltungsdetails" and (body.include? date_check or body.include? semester_check)
+  if body and body.include?("Veranstaltungsdetails") and (body.include?(date_check) or body.include?(semester_check))
     doc = Nokogiri::HTML(body)
     html_title = doc.css('form[name=courseform] h1')
     unless html_title
@@ -182,6 +182,9 @@ def parse(body, url)
     rescue
       puts "!!! FAILed to create document: #{title} (#{url})"
     end
+    
+  else
+    # puts "failed #{url} with #{body.include?("Veranstaltungsdetails")}   #{body.include?(date_check)} #{body.include?(semester_check)}\n\n"
 
   end
 end
