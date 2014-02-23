@@ -19,5 +19,3 @@ If you are only interested in the course data, checkout our course API at [dev.y
 ## Contribute
 Fork our repository, change, test and then make a pull-request. :-) Thanks!
 
-## License
-This is GPL v3 software. (<http://www.gnu.org/licenses/gpl-3.0.txt> / German: <http://www.gnu.de/documents/gpl.de.html>)
