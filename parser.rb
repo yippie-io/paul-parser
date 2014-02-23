@@ -12,7 +12,6 @@ class Course
   field :title, type: String
   field :title_downcase, type: String
   field :paul_id, type: String
-  field :internal_course_id, type: String
   field :course_data, type: Array
   field :course_type, type: String
   field :paul_url, type: String
@@ -21,7 +20,6 @@ class Course
   field :meta_rooms, type: String
   field :sws, type: Integer
   field :description, type: String
-  field :_id, type: String, default: ->{ internal_course_id }
   index({title_downcase: 1})
   index({meta_lecturer_names: 1})
   index({meta_rooms: 1})
@@ -71,18 +69,6 @@ def parse(body, url)
       else
         title = line.strip
       end
-    end
-   
-    html_internal_course_id = doc.css('table[class=tb]')
-    internal_course_id = nil
-    html_internal_course_id.each do |table|
-      if table.attribute('courseid')
-        internal_course_id = clear(table.attribute('courseid').value)
-        break
-      end
-    end
-    unless internal_course_id
-      return
     end
     
     if kleingruppe
@@ -161,14 +147,12 @@ def parse(body, url)
         }
       end
     end 
-    #pp title.strip
     begin
       Course.create!(
       title: title,
       title_downcase: kleingruppe ? kleingruppe_title.downcase : title.downcase,
       course_data: course_data,
       paul_id: course_id,
-      internal_course_id: internal_course_id,
       course_short_desc: course_short_desc,
       course_short_desc_downcase: course_short_desc.downcase,
       paul_url: url,
