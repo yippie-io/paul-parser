@@ -1,6 +1,21 @@
 # simply paste in (heroku) rails console, and run 'my_update!'. 
 # it will print out an estimate and then run
 
+def update_non_custom_courses!(user)
+  courses = user.events.map(&:course_id).uniq
+  courses.each do |c|
+    begin
+      old_course = Course.find(c)
+      paul_id = old_course.paul_id
+      new_course = Course.where(paul_id: paul_id).where(parse_revision: 1).first
+      user.events.where(course_id: c).where(custom: false).delete_all
+      user.add_course!(new_course)
+    rescue
+      user.events.where(course_id: c).where(custom: false).delete_all
+    end
+  end
+end
+
 def estimate!
   puts "updating first five users to estimate time needed"
   user_count = User.count
@@ -8,7 +23,7 @@ def estimate!
   beginning = Time.now
   User.desc(:created_at).limit(5).each_with_index do |user, i|
     print "#{i+1} .. "
-    user.update_non_custom_courses!
+    update_non_custom_courses!(user)
   end
   puts 'done.'
   (Time.now - beginning)/5

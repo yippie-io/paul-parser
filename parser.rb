@@ -21,7 +21,8 @@ class Course
   field :meta_rooms, type: String
   field :sws, type: Integer
   field :description, type: String
-  field :_id, type: String, default: ->{ paul_id }
+#  field :_id, type: String, default: ->{ internal_course_id }
+  field :parse_revision, type: Integer
   index({title_downcase: 1})
   index({meta_lecturer_names: 1})
   index({meta_rooms: 1})
@@ -179,7 +180,8 @@ def parse(body, url)
       meta_lecturer_names: instructors.join(",").downcase,
       meta_rooms: rooms.join(",").downcase,
       sws: sws.to_i,
-      description: description
+      description: description,
+      parse_revision: 1     ### SET!
       )
     rescue
       puts "!!! FAILed to create document: #{title} (#{url})"
