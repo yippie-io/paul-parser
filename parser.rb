@@ -21,7 +21,7 @@ class Course
   field :meta_rooms, type: String
   field :sws, type: Integer
   field :description, type: String
-  field :_id, type: String, default: ->{ internal_course_id }
+  field :_id, type: String, default: ->{ paul_id }
   index({title_downcase: 1})
   index({meta_lecturer_names: 1})
   index({meta_rooms: 1})
@@ -52,15 +52,16 @@ def parse(body, url)
     'Dez' => '12'
   }
   
-  date_check = 'Okt. 2013'
-  semester_check = '#pageTopNavi ul.nav.depth_2 #link000574 a.link000574 span{'
+  date_check = 'Apr. 2014'
+  semester_check = '#pageTopNavi ul.nav.depth_2 #link000578 a.link000578 span{'
   
-  if body and body.include? "Veranstaltungsdetails" and (body.include? date_check or body.include? semester_check)
+  if body and body.include? "Veranstaltungsdetails" and (body.include?(date_check) or body.include?(semester_check))
     doc = Nokogiri::HTML(body)
     html_title = doc.css('form[name=courseform] h1')
     unless html_title
       return
     end
+    
     kleingruppe = body.include? "Kleingruppe:"
     inner_title = clear(html_title.first.inner_html)
     title = ''
@@ -72,7 +73,7 @@ def parse(body, url)
         title = line.strip
       end
     end
-   
+       
     html_internal_course_id = doc.css('table[class=tb]')
     internal_course_id = nil
     html_internal_course_id.each do |table|
@@ -82,7 +83,8 @@ def parse(body, url)
       end
     end
     unless internal_course_id
-      return
+      internal_course_id = course_id
+      return unless internal_course_id
     end
     
     if kleingruppe
@@ -161,7 +163,7 @@ def parse(body, url)
         }
       end
     end 
-    #pp title.strip
+
     begin
       Course.create!(
       title: title,
@@ -183,7 +185,11 @@ def parse(body, url)
       puts "!!! FAILed to create document: #{title} (#{url})"
     end
 
+  else
+    #print "x"
+    #puts "--------------------------\nskipped, veranstalungsdetails: #{body.include? "Veranstaltungsdetails"}, date_check: #{body.include? date_check}, sem_check: #{body.include? semester_check}"
   end
+  
 end
   
 
@@ -207,4 +213,4 @@ collection.find.each do |page|
   puts "[#{counter}/#{collection.count}] (#{counter*100/collection.count}%)" if (counter % 200) === 0
 end
 
-puts "Course documents: #{Course.count}, skipped parsing of #{skipped} pages."
+puts "Course documents: #{Course.count}, skipped parsing of #{skipped} empty pages."
