@@ -7,7 +7,7 @@ def update_non_custom_courses!(user)
     begin
       old_course = Course.find(c)
       paul_id = old_course.paul_id
-      new_course = Course.where(paul_id: paul_id).where(parse_revision: 1).first
+      new_course = Course.where(paul_id: paul_id).where(parse_revision: 2).first
       user.events.where(course_id: c).where(custom: false).delete_all
       user.add_course!(new_course)
     rescue
@@ -53,6 +53,6 @@ def my_update!
   puts "now updating the other #{user_count - 5} users\nnote: first number in status lines can be used to resume via skip_c.\nnow GO!"
   User.desc(:created_at).skip(5+skip_c).each_with_index do |user, i|
     puts "#{i+5+skip_c} - #{((100*i+5+skip_c).to_f/user_count).round(1)}%" if i % 20 == 0
-    user.update_non_custom_courses!
+    update_non_custom_courses!(user)
   end
 end

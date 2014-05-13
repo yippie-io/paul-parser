@@ -181,7 +181,7 @@ def parse(body, url)
       meta_rooms: rooms.join(",").downcase,
       sws: sws.to_i,
       description: description,
-      parse_revision: 1     ### SET!
+      parse_revision: 2     ### SET!
       )
     rescue
       puts "!!! FAILed to create document: #{title} (#{url})"
